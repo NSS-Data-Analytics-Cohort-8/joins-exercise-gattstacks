@@ -42,18 +42,21 @@ LIMIT 1;
 -- 3. What is the highest grossing G-rated movie? Which company distributed it?
 
 SELECT 
-	film_title,
-	mpaa_rating,
+	film_title AS movie_name,
+	mpaa_rating AS rating,
 	worldwide_gross,
-	company_name
+	company_name as distributing_company
 FROM 
 	specs
 INNER JOIN
-	revenue,
+	revenue
+USING (movie_id)
+INNER JOIN
 	distributors
 ON
-	specs.movie_id = revenue.movie_id
 	specs.domestic_distributor_id = distributors.distributor_id
+WHERE
+	mpaa_rating = 'G'
 ORDER BY
 	worldwide_gross DESC
 LIMIT 1;
