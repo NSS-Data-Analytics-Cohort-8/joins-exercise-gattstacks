@@ -144,5 +144,5 @@ INNER JOIN rating
 USING (movie_id)
 GROUP BY specs.length_in_min, rating.imdb_rating
 ORDER BY specs.length_in_min DESC;
-	-- Using averageif function in excel, movies over 2 hours long perform better with critics with an average rating of approx 7.27 vs moves under 2 hours long with an average rating of approx 6.91 
+	-- Using averageif function in excel, movies over 2 hours long perform better with critics with an average rating of approx 7.27 vs moves under 2 hours long with an average rating of approx 6.91  
 	
