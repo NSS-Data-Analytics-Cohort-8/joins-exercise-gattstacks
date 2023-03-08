@@ -16,27 +16,29 @@
 -- 1. Give the name, release year, and worldwide gross of the lowest grossing movie.
 
 SELECT 
-	specs.film_title AS name,
+	film_title AS name,
 	release_year,
-	worldwide_gross
+	worldwide_gross :: money
 FROM specs
-INNER JOIN revenue
-ON specs.movie_id = revenue.movie_id
+LEFT JOIN revenue
+USING (movie_id)
 ORDER BY worldwide_gross
 LIMIT 1;
+
 	-- Semi-Tough (1977), $37,187,139
 
 -- 2. What year has the highest average imdb rating?
 
 SELECT
 	release_year,
-	AVG(imdb_rating)
+	ROUND(AVG(imdb_rating), 2) AS avg_imdb_rating
 FROM specs
-INNER JOIN rating
-ON specs.movie_id = rating.movie_id
-GROUP BY specs.release_year
-ORDER BY AVG(imdb_rating) DESC
+LEFT JOIN rating
+USING (movie_id)
+GROUP BY release_year
+ORDER BY avg_imdb_rating DESC
 LIMIT 1;
+
 	-- 1991 with average imdb rating of 7.45.
 
 -- 3. What is the highest grossing G-rated movie? Which company distributed it?
