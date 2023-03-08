@@ -44,19 +44,20 @@ LIMIT 1;
 -- 3. What is the highest grossing G-rated movie? Which company distributed it?
 
 SELECT 
-	film_title AS movie_name,
+	film_title,
 	mpaa_rating AS rating,
-	worldwide_gross,
+	worldwide_gross :: money,
 	company_name as distributing_company
-FROM specs
-INNER JOIN revenue
+FROM distributors
+RIGHT JOIN specs
+ON distributors.distributor_id = specs.domestic_distributor_id
+LEFT JOIN revenue
 USING (movie_id)
-INNER JOIN distributors
-ON specs.domestic_distributor_id = distributors.distributor_id
 WHERE mpaa_rating = 'G'
 ORDER BY worldwide_gross DESC
 LIMIT 1;
-	-- Toy Story 4 is highest grossing G-rated movie. It was distributed by Walt Disney. 
+
+	-- Toy Story 4 is highest grossing G-rated movie at "$1,073,394,593.00". It was distributed by Walt Disney. 
 	
 -- 4. Write a query that returns, for each distributor in the distributors table, the distributor name and the number of movies associated with that distributor in the movies (specs) table. Your result set should include all of the distributors, whether or not they have any movies in the movies table.
 
