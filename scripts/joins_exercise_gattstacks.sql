@@ -62,13 +62,12 @@ LIMIT 1;
 -- 4. Write a query that returns, for each distributor in the distributors table, the distributor name and the number of movies associated with that distributor in the movies (specs) table. Your result set should include all of the distributors, whether or not they have any movies in the movies table.
 
 SELECT
-	distributors.company_name AS distributor,
-	COUNT(domestic_distributor_id) AS number_of_movies
+	company_name AS distributor,
+	COUNT(film_title) AS film_count
 FROM distributors
-INNER JOIN specs
+LEFT JOIN specs
 ON distributors.distributor_id = specs.domestic_distributor_id
-GROUP BY distributors.company_name
-ORDER BY number_of_movies DESC;
+GROUP BY distributor;
 	/* 
 	"Walt Disney "						76
 	"Warner Bros."						71
