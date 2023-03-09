@@ -69,34 +69,37 @@ LEFT JOIN specs
 ON distributors.distributor_id = specs.domestic_distributor_id
 GROUP BY distributor;
 	/* 
-	"Walt Disney "						76
-	"Warner Bros."						71
+	distributor							film_count
 	"Universal Pictures"				58
-	"Paramount Pictures"				51
-	"Twentieth Century Fox"				49
-	"Sony Pictures"						31
-	"DreamWorks"						17
 	"Columbia Pictures"					15
-	"Metro-Goldwyn-Mayer"				13
-	"TriStar Pictures"					9
-	"New Line Cinema"					8
-	"Orion Pictures"					6
-	"Lionsgate"							5
-	"Summit Entertainment"				3
-	"Vestron Pictures"					1
 	"American International Pictures"	1
 	"Miramax"							1
+	"TriStar Pictures"					9
+	"DreamWorks"						17
+	"Orion Pictures"					6
+	"Paramount Pictures"				51
 	"Icon Productions"					1
+	"Sony Pictures"						31
 	"IFC Films"							1
+	"Summit Entertainment"				3
 	"The H Collective"					1
 	"Fox Searchlight Pictures"			1
+	"New Line Cinema"					8
+	"Metro-Goldwyn-Mayer"				13
+	"Twentieth Century Fox"				49
+	"Walt Disney "						76
+	"Warner Bros."						71
+	"Lionsgate"							5
+	"Legendary Entertainment"			0
+	"Vestron Pictures"					1
+	"Relativity Media"					0
 	*/
 
 -- 5. Write a query that returns the five distributors with the highest average movie budget.
 
 SELECT 
 	distributors.company_name AS distributor,
-	ROUND(AVG(revenue.film_budget), 2) AS average_movie_budget
+	ROUND(AVG(revenue.film_budget), 2) :: money AS average_movie_budget
 FROM distributors
 INNER JOIN specs
 ON distributors.distributor_id = specs.domestic_distributor_id
@@ -105,11 +108,12 @@ USING (movie_id)
 GROUP BY distributor
 ORDER BY average_movie_budget DESC
 LIMIT 5;
-	-- 1) "Walt Disney "	148,735,526.32
-	-- 2) "Sony Pictures"	139,129,032.26
-	-- 3) "Lionsgate"		122,600,000.00
-	-- 4) "DreamWorks"		121,352,941.18
-	-- 5) "Warner Bros."	103,430,985.92
+
+	-- 1) "Walt Disney "	$148,735,526.32
+	-- 2) "Sony Pictures"	$139,129,032.26
+	-- 3) "Lionsgate"		$122,600,000.00
+	-- 4) "DreamWorks"		$121,352,941.18
+	-- 5) "Warner Bros."	$103,430,985.92
 
 -- 6. How many movies in the dataset are distributed by a company which is not headquartered in California? Which of these movies has the highest imdb rating?
 
@@ -131,20 +135,27 @@ GROUP BY
 	film_title,
 	rating.imdb_rating
 ORDER BY rating.imdb_rating DESC;
+
 	/*
-	"Vestron Pictures"	"Chicago, Illinois"	1	"Dirty Dancing"				7.0
-	"IFC Films"			"New York, NY"		1	"My Big Fat Greek Wedding"	6.5
+	company_name			headquarters			number_of_movies	film_title					imdb_rating
+	"Vestron Pictures"		"Chicago, Illinois"		1					"Dirty Dancing"				7.0
+	"IFC Films"				"New York, NY"			1					"My Big Fat Greek Wedding"	6.5
 	*/
 
 -- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
 
-SELECT
-	specs.length_in_min,
-	rating.imdb_rating
+SELECT 
+	length_in_min > 120 AS over_2_hours,
+	AVG(imdb_rating) AS avg_imdb_rating
 FROM specs
-INNER JOIN rating
+LEFT JOIN rating
 USING (movie_id)
-GROUP BY specs.length_in_min, rating.imdb_rating
-ORDER BY specs.length_in_min DESC;
-	-- Using averageif function in excel, movies over 2 hours long perform better with critics with an average rating of approx 7.27 vs moves under 2 hours long with an average rating of approx 6.91  
+GROUP BY length_in_min > 120;
 	
+	 	/*
+		over_2_hours		avg_imdb_rating
+		false				6.9154185022026432
+		true				7.2571428571428571
+		
+		Based on results, movies over 2 hours on average have a higher imdb rating as compared to movies less then two hours long.
+		*/
