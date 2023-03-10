@@ -47,7 +47,7 @@ SELECT
 	film_title,
 	mpaa_rating AS rating,
 	worldwide_gross :: money,
-	company_name as distributing_company
+	company_name AS distributing_company
 FROM distributors
 RIGHT JOIN specs
 ON distributors.distributor_id = specs.domestic_distributor_id
@@ -118,23 +118,23 @@ LIMIT 5;
 -- 6. How many movies in the dataset are distributed by a company which is not headquartered in California? Which of these movies has the highest imdb rating?
 
 SELECT
-	distributors.company_name,
-	distributors.headquarters,
+	company_name,
+	headquarters,
 	COUNT(domestic_distributor_id) AS number_of_movies,
-	specs.film_title,
-	rating.imdb_rating
+	film_title,
+	imdb_rating
 FROM distributors
 INNER JOIN specs
 ON distributors.distributor_id = specs.domestic_distributor_id
 INNER JOIN rating
 USING (movie_id)
-WHERE distributors.headquarters NOT LIKE '%CA'
+WHERE headquarters NOT LIKE '%CA'
 GROUP BY 
-	distributors.company_name, 
-	distributors.headquarters,
+	company_name, 
+	headquarters,
 	film_title,
-	rating.imdb_rating
-ORDER BY rating.imdb_rating DESC;
+	imdb_rating
+ORDER BY imdb_rating DESC;
 
 	/*
 	company_name			headquarters			number_of_movies	film_title					imdb_rating
